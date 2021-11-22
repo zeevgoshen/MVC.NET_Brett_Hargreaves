@@ -6,17 +6,20 @@ using System.Web.Mvc;
 using System.Runtime.Caching;
 using MyShop.Models;
 using MyShop.DB;
+using MyShop.ViewModels;
 
 namespace MyShop.Controllers
 {
     public class ProductManagerController : Controller
     {
         ProductRepository context;
+        ProductCategoryRepository productCategories;
+
 
         public ProductManagerController()
         {
             context = new ProductRepository();
-
+            productCategories = new ProductCategoryRepository();
 
         }
 
@@ -27,10 +30,19 @@ namespace MyShop.Controllers
             return View(products);
         }
 
+
+        //public ActionResult Create()
+        //{
+        //    Product product = new Product();
+        //    return View(product);
+        //}
+
         public ActionResult Create()
         {
-            Product product = new Product();
-            return View(product);
+            ProductManagerViewModel viewModel = new ProductManagerViewModel();
+            viewModel.Product = new Product();
+            viewModel.ProductCategories = productCategories.Collection();
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -59,7 +71,12 @@ namespace MyShop.Controllers
             }
             else
             {
-                return View(product);
+                ProductManagerViewModel viewModel = new ProductManagerViewModel();
+                viewModel.Product = product;
+                viewModel.ProductCategories = productCategories.Collection();
+
+                return View(viewModel);
+                //return View(product);
             }
         }
 
